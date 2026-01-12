@@ -1,0 +1,112 @@
+openapi: 3.1.0
+info:
+    title: Simple API
+    version: 1.0.0
+servers:
+    - url: 'http://localhost/api'
+tags:
+    - name: Task
+components:
+    schemas:
+        Task:
+            summary: For result
+            type: object
+            required: [ id, title ]
+            properties:
+                id: {type: integer, example: 1}
+                title: {type: string, example: 'Do test work'}
+                description: {type: string, example: 'Read description and implement'}
+        TaskInput:
+            summary: For create/update
+            type: object
+            required: [ title ]
+            properties:
+                title: {type: string, example: 'Do test work'}
+                description: {type: string, example: 'Read description and implement'}
+    requestBodies:
+        TaskInput:
+            required: true
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/TaskInput'
+    parameters:
+        TaskId:
+            name: id
+            in: path
+            schema: {type: integer}
+            required: true
+    responses:
+        Task:
+            content:
+                application/json:
+                    schema:
+                        type: object
+                        properties:
+                            data:
+                                $ref: '#/components/schemas/Task'
+        ValidationError:
+            content:
+                application/json:
+                    schema:
+                        type: object
+                        properties:
+                            message: {type: string, example: 'The title field must be a string. (and 1 more error)'}
+                            errors:
+                                type: object
+                                example:
+                                    title: [ 'The title field must be a string.' ]
+                                    description: [ 'The description field must be a string.' ]
+paths:
+    /tasks:
+        get:
+            tags: [ Task ]
+            summary: Get list of tasks
+            parameters:
+                - name: page
+                  in: query
+                  schema: {type: integer, default: 1}
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    data:
+                                        type: array
+                                        items:
+                                            $ref: '#/components/schemas/Task'
+        post:
+            tags: [ Task ]
+            summary: Create task
+            requestBody:
+                $ref: '#/components/requestBodies/TaskInput'
+            responses:
+                201:
+                    $ref: '#/components/responses/Task'
+                422:
+                    summary: Validation error
+                    $ref: '#/components/responses/ValidationError'
+    /tasks/{id}:
+        get:
+            tags: [ Task ]
+            summary: Get task
+            parameters:
+                - $ref: '#/components/parameters/TaskId'
+            responses:
+                200:
+                    $ref: '#/components/responses/Task'
+        put:
+            tags: [ Task ]
+            summary: Update task
+            parameters:
+                - $ref: '#/components/parameters/TaskId'
+            requestBody:
+                $ref: '#/components/requestBodies/TaskInput'
+            responses:
+                200:
+                    $ref: '#/components/responses/Task'
+                422:
+                    summary: Validation error
+                    $ref: '#/components/responses/ValidationError'
