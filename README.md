@@ -3,8 +3,16 @@
 [Постановка задачи](task-description.pdf)  
 [Описание OpenAPI](openapi.yaml)  
 
-Base URL: http://localhost/api  
+API base URL: http://localhost/api  
 
+Установка зависимостей:
+```shell
+composer install
+```
+Билд образов docker:
+```shell
+./vendor/bin/sail build --no-cache
+```
 Поднять окружение (docker compose):
 ```shell
 ./vendor/bin/sail up -d
