@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Enum\TaskStatus;
+use App\Http\Requests\CreateTaskRequest;
 use App\Http\Requests\TaskRequest;
+use App\Http\Requests\UpdateTaskRequest;
 use App\Models\Task;
-use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
@@ -24,7 +25,7 @@ class TaskController extends Controller
         return $task->toResource();
     }
 
-    public function store(TaskRequest $request)
+    public function store(CreateTaskRequest $request)
     {
         $task = new Task;
 
@@ -34,7 +35,7 @@ class TaskController extends Controller
         return $task->toResource();
     }
 
-    public function update(TaskRequest $request, Task $task)
+    public function update(UpdateTaskRequest $request, Task $task)
     {
         $this->setData($request, $task);
         $task->save();
@@ -49,11 +50,10 @@ class TaskController extends Controller
         return response()->noContent();
     }
 
-    private function setData(Request $request, Task $task)
+    private function setData(TaskRequest $request, Task $task)
     {
-        $data = $request->json();
-        $task->status = $data->getEnum('status', TaskStatus::class);
-        $task->title = $data->get('title');
-        $task->description = $data->get('description');
+        $task->status = $request->getStatus() ?? TaskStatus::New;
+        $task->title = $request->getTitle();
+        $task->description = $request->getDescription();
     }
 }
