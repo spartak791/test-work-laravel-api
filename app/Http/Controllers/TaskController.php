@@ -47,6 +47,13 @@ class TaskController extends Controller
         return $task->toResource();
     }
 
+    public function destroy(Task $task)
+    {
+        $task->delete();
+
+        return response()->noContent();
+    }
+
     private function setData(Request $request, Task $task)
     {
         $data = $request->json();

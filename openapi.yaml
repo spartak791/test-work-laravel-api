@@ -110,3 +110,11 @@ paths:
                 422:
                     summary: Validation error
                     $ref: '#/components/responses/ValidationError'
+        delete:
+            tags: [ Task ]
+            summary: Update task
+            parameters:
+                - $ref: '#/components/parameters/TaskId'
+            responses:
+                204:
+                    summary: Task deleted successfully
