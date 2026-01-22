@@ -1,4 +1,5 @@
-# Тестовое задание. Простое API на Laravel
+## Тестовое задание. Простое API на Laravel
+(Моё знакомство с Laravel)  
 
 [Постановка задачи](task-description.pdf)  
 [Описание OpenAPI](openapi.yaml)  
@@ -20,6 +21,10 @@ composer install
 Накатить миграции с тестовыми данными:
 ```shell
 ./vendor/bin/sail artisan migrate --seed
+```
+Запуск тестов:
+```shell
+./vendor/bin/sail test
 ```
 Положить окружение:
 ```shell
