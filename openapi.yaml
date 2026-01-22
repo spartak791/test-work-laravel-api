@@ -9,35 +9,39 @@ tags:
 components:
     schemas:
         Task:
-            summary: For result
+            description: For result
             type: object
             required: [ id, title ]
             properties:
                 id: {type: integer, example: 1}
                 title: {type: string, example: 'Do test work'}
                 description: {type: string, example: 'Read description and implement'}
-        TaskInput:
-            summary: For create/update
+        TaskCreateInput:
+            description: For create
             type: object
             required: [ title ]
             properties:
+                status: {type: string, example: 'in_progress', description: 'Valid values: new, in_progress, done'}
                 title: {type: string, example: 'Do test work'}
                 description: {type: string, example: 'Read description and implement'}
-    requestBodies:
-        TaskInput:
-            required: true
-            content:
-                application/json:
-                    schema:
-                        $ref: '#/components/schemas/TaskInput'
+        TaskUpdateInput:
+            description: For update
+            type: object
+            required: [ status, title ]
+            properties:
+                status: {type: string, example: 'in_progress', description: 'Valid values: new, in_progress, done'}
+                title: {type: string, example: 'Do test work'}
+                description: {type: string, example: 'Read description and implement'}
     parameters:
         TaskId:
+            description: Existing task ID
             name: id
             in: path
             schema: {type: integer}
             required: true
     responses:
         Task:
+            description: Task
             content:
                 application/json:
                     schema:
@@ -46,14 +50,15 @@ components:
                             data:
                                 $ref: '#/components/schemas/Task'
         ResourceNotFound:
-            summary: Resource not found
+            description: Resource not found
             content:
                 application/json:
                     schema:
                         type: object
                         properties:
-                            message: {type: text, example: 'Resource not found.'}
+                            message: {type: string, example: 'Resource not found.'}
         ValidationError:
+            description: Validation error
             content:
                 application/json:
                     schema:
@@ -69,13 +74,14 @@ paths:
     /tasks:
         get:
             tags: [ Task ]
-            summary: Get list of tasks
+            description: Get list of tasks
             parameters:
                 - name: page
                   in: query
                   schema: {type: integer, default: 1}
             responses:
                 200:
+                    description: List
                     content:
                         application/json:
                             schema:
@@ -87,19 +93,22 @@ paths:
                                             $ref: '#/components/schemas/Task'
         post:
             tags: [ Task ]
-            summary: Create task
+            description: Create task
             requestBody:
-                $ref: '#/components/requestBodies/TaskInput'
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/TaskCreateInput'
             responses:
                 201:
                     $ref: '#/components/responses/Task'
                 422:
-                    summary: Validation error
                     $ref: '#/components/responses/ValidationError'
     /tasks/{id}:
         get:
             tags: [ Task ]
-            summary: Get task
+            description: Get task
             parameters:
                 - $ref: '#/components/parameters/TaskId'
             responses:
@@ -109,26 +118,29 @@ paths:
                     $ref: '#/components/responses/ResourceNotFound'
         put:
             tags: [ Task ]
-            summary: Update task
+            description: Update task
             parameters:
                 - $ref: '#/components/parameters/TaskId'
             requestBody:
-                $ref: '#/components/requestBodies/TaskInput'
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/TaskUpdateInput'
             responses:
                 200:
                     $ref: '#/components/responses/Task'
                 404:
                     $ref: '#/components/responses/ResourceNotFound'
                 422:
-                    summary: Validation error
                     $ref: '#/components/responses/ValidationError'
         delete:
             tags: [ Task ]
-            summary: Update task
+            description: Delete task
             parameters:
                 - $ref: '#/components/parameters/TaskId'
             responses:
                 204:
-                    summary: Task deleted successfully
+                    description: Task deleted successfully
                 404:
                     $ref: '#/components/responses/ResourceNotFound'
