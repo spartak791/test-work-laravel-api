@@ -45,6 +45,14 @@ components:
                         properties:
                             data:
                                 $ref: '#/components/schemas/Task'
+        ResourceNotFound:
+            summary: Resource not found
+            content:
+                application/json:
+                    schema:
+                        type: object
+                        properties:
+                            message: {type: text, example: 'Resource not found.'}
         ValidationError:
             content:
                 application/json:
@@ -97,6 +105,8 @@ paths:
             responses:
                 200:
                     $ref: '#/components/responses/Task'
+                404:
+                    $ref: '#/components/responses/ResourceNotFound'
         put:
             tags: [ Task ]
             summary: Update task
@@ -107,6 +117,8 @@ paths:
             responses:
                 200:
                     $ref: '#/components/responses/Task'
+                404:
+                    $ref: '#/components/responses/ResourceNotFound'
                 422:
                     summary: Validation error
                     $ref: '#/components/responses/ValidationError'
@@ -118,3 +130,5 @@ paths:
             responses:
                 204:
                     summary: Task deleted successfully
+                404:
+                    $ref: '#/components/responses/ResourceNotFound'
